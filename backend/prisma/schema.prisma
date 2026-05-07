@@ -1,0 +1,247 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+  MODERATOR
+}
+
+enum RequestType {
+  CONSUMABLE
+  BORROWABLE
+}
+
+enum RequestStatus {
+  OPEN
+  MATCHED
+  ACCEPTED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  COMPLETED
+  EXPIRED
+  CANCELLED
+}
+
+enum TripStatus {
+  ANNOUNCED
+  MATCHING
+  FULL
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ItemStatus {
+  AVAILABLE
+  RESERVED
+  BORROWED
+  MAINTENANCE
+}
+
+enum BorrowTransactionStatus {
+  REQUESTED
+  ACCEPTED
+  BORROWED
+  RETURNED
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationType {
+  REQUEST_MATCH
+  TRIP_BROADCAST
+  URGENT_REQUEST
+  GEOFENCE
+  COIN
+  BORROWABLE
+  SYSTEM
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum CoinTransactionType {
+  EARN
+  SPEND
+  ESCROW_HOLD
+  ESCROW_RELEASE
+  REFUND
+  DEPOSIT
+}
+
+model User {
+  id                   String              @id @default(uuid())
+  name                 String
+  email                String              @unique
+  passwordHash         String
+  hostelName           String
+  wing                 String
+  role                 Role                @default(STUDENT)
+  coins                Int                 @default(100)
+  karmaPoints          Int                 @default(0)
+  rating               Float               @default(5)
+  successfulDeliveries Int                 @default(0)
+  successfulReturns    Int                 @default(0)
+  cancellations        Int                 @default(0)
+  reputationScore      Float               @default(60)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  requestsCreated      Request[]           @relation("RequestsCreated")
+  requestsAccepted     Request[]           @relation("RequestsAccepted")
+  trips                Trip[]
+  ownedItems           Item[]
+  borrowTransactions   BorrowTransaction[] @relation("BorrowerTransactions")
+  lendingTransactions  BorrowTransaction[] @relation("OwnerTransactions")
+  notifications        Notification[]
+  coinTransactions     CoinTransaction[]
+  ratingsGiven         Rating[]            @relation("RatingsGiven")
+  ratingsReceived      Rating[]            @relation("RatingsReceived")
+}
+
+model Place {
+  id           String    @id @default(uuid())
+  name         String
+  type         String
+  latitude     Float
+  longitude    Float
+  radiusMeters Int
+  createdAt    DateTime  @default(now())
+  requests     Request[]
+  trips        Trip[]
+}
+
+model Request {
+  id            String         @id @default(uuid())
+  title         String
+  description   String
+  itemName      String
+  type          RequestType
+  status        RequestStatus  @default(OPEN)
+  rewardCoins   Int
+  depositCoins  Int            @default(0)
+  isUrgent      Boolean        @default(false)
+  expiresAt     DateTime
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  requesterId   String
+  requester     User           @relation("RequestsCreated", fields: [requesterId], references: [id])
+  helperId      String?
+  helper        User?          @relation("RequestsAccepted", fields: [helperId], references: [id])
+  placeId       String
+  place         Place          @relation(fields: [placeId], references: [id])
+  tripLinks     TripRequest[]
+  ratings       Rating[]
+}
+
+model Trip {
+  id               String        @id @default(uuid())
+  title            String
+  destinationLabel String
+  departureTime    DateTime
+  availableSlots   Int
+  occupiedSlots    Int           @default(0)
+  status           TripStatus    @default(ANNOUNCED)
+  geofenceTag      String
+  notes            String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  helperId         String
+  helper           User          @relation(fields: [helperId], references: [id])
+  startPlaceId     String
+  startPlace       Place         @relation(fields: [startPlaceId], references: [id])
+  requestLinks     TripRequest[]
+}
+
+model TripRequest {
+  id        String   @id @default(uuid())
+  tripId     String
+  requestId  String
+  createdAt  DateTime @default(now())
+  trip       Trip     @relation(fields: [tripId], references: [id])
+  request    Request  @relation(fields: [requestId], references: [id])
+
+  @@unique([tripId, requestId])
+}
+
+model Item {
+  id                   String               @id @default(uuid())
+  title                String
+  description          String
+  category             String
+  securityDepositCoins Int                  @default(0)
+  dailyRateCoins       Int                  @default(0)
+  status               ItemStatus           @default(AVAILABLE)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  ownerId              String
+  owner                User                 @relation(fields: [ownerId], references: [id])
+  borrowTransactions   BorrowTransaction[]
+}
+
+model BorrowTransaction {
+  id            String                  @id @default(uuid())
+  status        BorrowTransactionStatus @default(REQUESTED)
+  depositCoins  Int                     @default(0)
+  returnDueAt   DateTime
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  itemId        String
+  item          Item                    @relation(fields: [itemId], references: [id])
+  borrowerId    String
+  borrower      User                    @relation("BorrowerTransactions", fields: [borrowerId], references: [id])
+  ownerId       String
+  owner         User                    @relation("OwnerTransactions", fields: [ownerId], references: [id])
+  ratings       Rating[]
+}
+
+model Notification {
+  id           String               @id @default(uuid())
+  title        String
+  body         String
+  type         NotificationType
+  priority     NotificationPriority @default(MEDIUM)
+  read         Boolean              @default(false)
+  cooldownKey  String?
+  createdAt    DateTime             @default(now())
+  userId       String
+  user         User                 @relation(fields: [userId], references: [id])
+}
+
+model CoinTransaction {
+  id          String              @id @default(uuid())
+  amount      Int
+  direction   String
+  reference   String
+  description String
+  type        CoinTransactionType
+  createdAt   DateTime            @default(now())
+  userId      String
+  user        User                @relation(fields: [userId], references: [id])
+}
+
+model Rating {
+  id                  String               @id @default(uuid())
+  score               Int
+  comment             String
+  createdAt           DateTime             @default(now())
+  fromUserId          String
+  fromUser            User                 @relation("RatingsGiven", fields: [fromUserId], references: [id])
+  toUserId            String
+  toUser              User                 @relation("RatingsReceived", fields: [toUserId], references: [id])
+  requestId           String?
+  request             Request?             @relation(fields: [requestId], references: [id])
+  borrowTransactionId String?
+  borrowTransaction   BorrowTransaction?   @relation(fields: [borrowTransactionId], references: [id])
+}

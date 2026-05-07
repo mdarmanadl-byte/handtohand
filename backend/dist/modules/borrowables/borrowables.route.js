@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.borrowablesRouter = void 0;
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const borrowables_controller_1 = require("./borrowables.controller");
+const borrowables_schema_1 = require("./borrowables.schema");
+exports.borrowablesRouter = (0, express_1.Router)();
+exports.borrowablesRouter.get("/", (0, async_handler_1.asyncHandler)(borrowables_controller_1.getItems));
+exports.borrowablesRouter.post("/", auth_middleware_1.requireAuth, (0, validate_middleware_1.validate)({ body: borrowables_schema_1.createItemSchema }), (0, async_handler_1.asyncHandler)(borrowables_controller_1.postItem));
+exports.borrowablesRouter.post("/:itemId/borrow", auth_middleware_1.requireAuth, (0, validate_middleware_1.validate)({ body: borrowables_schema_1.borrowItemSchema }), (0, async_handler_1.asyncHandler)(borrowables_controller_1.borrow));
+exports.borrowablesRouter.post("/:transactionId/accept", auth_middleware_1.requireAuth, (0, async_handler_1.asyncHandler)(borrowables_controller_1.accept));
+exports.borrowablesRouter.post("/:transactionId/return", auth_middleware_1.requireAuth, (0, async_handler_1.asyncHandler)(borrowables_controller_1.returnItem));

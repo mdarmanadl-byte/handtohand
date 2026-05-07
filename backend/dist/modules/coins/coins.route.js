@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.coinsRouter = void 0;
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const coins_controller_1 = require("./coins.controller");
+const coins_schema_1 = require("./coins.schema");
+exports.coinsRouter = (0, express_1.Router)();
+exports.coinsRouter.use(auth_middleware_1.requireAuth);
+exports.coinsRouter.get("/wallet", (0, async_handler_1.asyncHandler)(coins_controller_1.wallet));
+exports.coinsRouter.post("/transfer", (0, validate_middleware_1.validate)({ body: coins_schema_1.transferCoinsSchema }), (0, async_handler_1.asyncHandler)(coins_controller_1.transfer));

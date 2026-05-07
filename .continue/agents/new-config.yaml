@@ -1,0 +1,13 @@
+name: Local Config
+version: 1.0.0
+models:
+  - name: Colab Agent (Qwen 7B)
+    provider: ollama
+    model: qwen2.5-coder:7b  # Make sure you ran !ollama pull mistral in Colab
+    apiBase: "https://sequence-hunter-cod-creation.trycloudflare.com" # <--- PASTE LINK HERE
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+    contextLength: 8192

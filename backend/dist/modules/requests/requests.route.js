@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.requestsRouter = void 0;
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const requests_controller_1 = require("./requests.controller");
+const requests_schema_1 = require("./requests.schema");
+exports.requestsRouter = (0, express_1.Router)();
+exports.requestsRouter.get("/", (0, async_handler_1.asyncHandler)(requests_controller_1.getRequests));
+exports.requestsRouter.get("/:requestId", (0, async_handler_1.asyncHandler)(requests_controller_1.getRequest));
+exports.requestsRouter.post("/", auth_middleware_1.requireAuth, (0, validate_middleware_1.validate)({ body: requests_schema_1.createRequestSchema }), (0, async_handler_1.asyncHandler)(requests_controller_1.postRequest));
+exports.requestsRouter.post("/:requestId/accept", auth_middleware_1.requireAuth, (0, async_handler_1.asyncHandler)(requests_controller_1.accept));
+exports.requestsRouter.patch("/:requestId/status", auth_middleware_1.requireAuth, (0, validate_middleware_1.validate)({ body: requests_schema_1.updateRequestStatusSchema }), (0, async_handler_1.asyncHandler)(requests_controller_1.patchStatus));

@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ratingsRouter = void 0;
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const ratings_controller_1 = require("./ratings.controller");
+const ratings_schema_1 = require("./ratings.schema");
+exports.ratingsRouter = (0, express_1.Router)();
+exports.ratingsRouter.get("/", (0, async_handler_1.asyncHandler)(ratings_controller_1.getRatings));
+exports.ratingsRouter.post("/", auth_middleware_1.requireAuth, (0, validate_middleware_1.validate)({ body: ratings_schema_1.createRatingSchema }), (0, async_handler_1.asyncHandler)(ratings_controller_1.postRating));

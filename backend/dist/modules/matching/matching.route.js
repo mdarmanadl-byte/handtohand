@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.matchingRouter = void 0;
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const matching_controller_1 = require("./matching.controller");
+const matching_schema_1 = require("./matching.schema");
+exports.matchingRouter = (0, express_1.Router)();
+exports.matchingRouter.use(auth_middleware_1.requireAuth);
+exports.matchingRouter.post("/geofence-entry", (0, validate_middleware_1.validate)({ body: matching_schema_1.geofenceSchema }), (0, async_handler_1.asyncHandler)(matching_controller_1.geofenceEntry));
+exports.matchingRouter.get("/recommendations", (0, async_handler_1.asyncHandler)(matching_controller_1.recommendations));

@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tripsRouter = void 0;
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const async_handler_1 = require("../../utils/async-handler");
+const trips_controller_1 = require("./trips.controller");
+const trips_schema_1 = require("./trips.schema");
+exports.tripsRouter = (0, express_1.Router)();
+exports.tripsRouter.get("/", (0, async_handler_1.asyncHandler)(trips_controller_1.getTrips));
+exports.tripsRouter.get("/:tripId", (0, async_handler_1.asyncHandler)(trips_controller_1.getTrip));
+exports.tripsRouter.post("/", auth_middleware_1.requireAuth, (0, validate_middleware_1.validate)({ body: trips_schema_1.createTripSchema }), (0, async_handler_1.asyncHandler)(trips_controller_1.postTrip));
+exports.tripsRouter.post("/:tripId/attach-request", auth_middleware_1.requireAuth, (0, validate_middleware_1.validate)({ body: trips_schema_1.attachTripRequestSchema }), (0, async_handler_1.asyncHandler)(trips_controller_1.attach));
