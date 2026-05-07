@@ -1,10 +1,9 @@
 ```txt
-You are a senior full-stack engineer and system architect.
 
-Build a production-level campus peer-to-peer assistance platform called “HandToHand” for IIT Delhi students.
 
-The platform is a decentralized student-powered campus logistics and sharing network where students help each other with deliveries, errands, and borrowable items while earning coins.
+Building a production-level campus peer-to-peer assistance platform called “HandToHand” for IIT Delhi students.
 
+The platform is a decentralized student-powered campus logistics and sharing network where students help each other with deliveries, errands, and borrowable items 
 The system should focus on:
 - real-world scalability
 - modular backend architecture
@@ -174,9 +173,6 @@ TECH STACK
 Frontend:
 - next js
 - Tailwind 
-APP:
-- react native -expo
--- Tailwind / NativeWind
 Backend:
 - Node.js
 - Express.js 
@@ -286,7 +282,7 @@ Use:
 ADVANCED FEATURES
 ==================================================
 
-Design scalable matching engine for:
+Designing scalable matching engine for:
 - geofence matching
 - trip-request matching
 - urgent broadcasts
@@ -299,25 +295,3 @@ Implement:
 - transactional coin updates
 
 ==================================================
-DELIVERABLES
-==================================================
-
-Generate:
-1. Full backend architecture
-2. Prisma schema
-3. REST API structure
-4. Socket.IO event design
-5. Redis usage design
-6. BullMQ queue structure
-7. Folder structure
-8. Authentication flow
-9. Matching engine design
-10. Database relationships
-11. Deployment architecture
-12. Docker setup
-13. Environment configuration
-14. Example API responses
-15. Scalable production practices
-
-The codebase should look like a real startup-grade backend system, not a beginner CRUD project.
-```
