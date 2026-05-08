@@ -1,6 +1,8 @@
 ```txt
 
 
+
+
 Building a production-level campus peer-to-peer assistance platform called “HandToHand” for IIT Delhi students.
 
 The platform is a decentralized student-powered campus logistics and sharing network where students help each other with deliveries, errands, and borrowable items 
@@ -295,3 +297,25 @@ Implement:
 - transactional coin updates
 
 ==================================================
+DELIVERABLES
+==================================================
+
+Generate:
+1. Full backend architecture
+2. Prisma schema
+3. REST API structure
+4. Socket.IO event design
+5. Redis usage design
+6. BullMQ queue structure
+7. Folder structure
+8. Authentication flow
+9. Matching engine design
+10. Database relationships
+11. Deployment architecture
+12. Docker setup
+13. Environment configuration
+14. Example API responses
+15. Scalable production practices
+
+
+```
