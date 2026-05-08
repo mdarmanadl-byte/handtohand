@@ -4,7 +4,7 @@ models:
   - name: Colab Agent (Qwen 7B)
     provider: ollama
     model: qwen2.5-coder:7b  # Make sure you ran !ollama pull mistral in Colab
-    apiBase: "https://sequence-hunter-cod-creation.trycloudflare.com" # <--- PASTE LINK HERE
+    apiBase: "https://flanking-viewer-debate.ngrok-free.dev/" # <--- PASTE LINK HERE
     roles:
       - chat
       - edit

@@ -7,6 +7,17 @@ export function initRequestSocket(socket: Socket) {
   });
 }
 
-export function emitRequestUpdated(payload: unknown) {
+export function emitRequestUpdated(
+  payload: unknown,
+  senderSocket?: Socket,
+) {
+  if (senderSocket) {
+    senderSocket.broadcast
+      .to("requests")
+      .emit("requests:updated", payload);
+
+    return;
+  }
+
   getSocketServer()?.to("requests").emit("requests:updated", payload);
 }
